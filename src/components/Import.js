@@ -8,16 +8,29 @@ import { deleteMake } from '../redux/actions';
 const Import = (props) => {
     console.log(props)
     const [anchorEl, setAnchorEl] = React.useState(null);
+    const [selectedIndex, setSelectedIndex] = React.useState(null);
+
     const open = Boolean(anchorEl);
-    const handleClick = (event) => {
+    const handleClick = (event, idx) => {
         setAnchorEl(event.currentTarget);
-    };
+        setSelectedIndex(idx);
+      };
+
     const handleClose = () => {
         setAnchorEl(null);
     };
+
+    const handleDelete = () => {
+        if (selectedIndex !== null) {
+          props.deleteMake(selectedIndex);
+        }
+        handleClose();
+      };
+
     return (
         <>
         <Button variant="contained" onClick={props.fetchMakes}>Import</Button>
+        <h2>COUNT: {props.makes.length}</h2>
         <TableContainer component={Paper}>
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
                 <TableHead>
@@ -35,12 +48,13 @@ const Import = (props) => {
                             <TableCell>{make.MakeName}</TableCell>
                             <TableCell>{make.VehicleTypeName}</TableCell>
                             <MoreVert
-                            sx={{ cursor: "pointer" }} id="basic-button"
+                            sx={{ cursor: 'pointer' }}
+                            id="basic-button"
                             aria-controls={open ? 'basic-menu' : undefined}
                             aria-haspopup="true"
                             aria-expanded={open ? 'true' : undefined}
-                            onClick={handleClick}>
-                            </MoreVert>
+                            onClick={(e) => handleClick(e, idx)}
+                            />
                             <Menu
                             id="basic-menu"
                             anchorEl={anchorEl}
@@ -50,7 +64,7 @@ const Import = (props) => {
                             'aria-labelledby': 'basic-button',
                             }}
                         >
-                            <MenuItem onClick={deleteMake}>Delete</MenuItem>
+                            <MenuItem onClick={handleDelete}>Delete</MenuItem>
                         </Menu>
                         </TableRow>
                         )
